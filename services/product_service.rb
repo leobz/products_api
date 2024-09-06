@@ -1,5 +1,6 @@
 require_relative '../models/product'
 require_relative '../storage/product_repository'
+require_relative '../workers/create_product_worker'
 
 class ProductService
   def self.list_products()
@@ -7,8 +8,7 @@ class ProductService
   end
 
   def self.create_product_with_delay(name, delay_in_seconds)
-    # TODO: Implement delay with sidekiq
-    create_product(name)
+    CreateProductWorker.perform_in(delay_in_seconds, name)
   end
 
   def self.create_product(name)
