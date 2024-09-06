@@ -1,3 +1,5 @@
+require 'sidekiq/testing'
+
 require_relative './test_helper.rb'
 require_relative '../services/product_service.rb'
 require_relative '../storage/product_repository.rb'
@@ -36,18 +38,20 @@ describe 'App' do
 
   describe 'POST /products' do
     it 'creates a product asynchronously' do
-      response = post '/products', { name: 'Product 1' }
+      product_data = { name: "Product 1" }.to_json
+      response = post '/products', product_data, { "CONTENT_TYPE" => "application/json" }
 
-      # TODO: Add sideqik test (enqueued job)
+      # Response
+      response.status.must_equal 200
+      assert_equal("Product will be created asynchronously.", JSON.parse(response.body)["message"])
+
+      # Execute enqueue jobs
+      Sidekiq::Worker.drain_all
 
       # Storage
       products = ProductRepository.all
       products.size.must_equal 1
       products.first.name.must_equal 'Product 1'
-
-      # Response
-      response.status.must_equal 200
-      assert_equal("Product will be created asynchronously.", JSON.parse(response.body)["message"])
     end
   end
 

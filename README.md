@@ -8,6 +8,12 @@ Install gems
 bundle install
 ```
 
+## Start app
+
+```bash
+make start
+```
+
 ## Run tests
 
 ```bash

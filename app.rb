@@ -1,5 +1,7 @@
 require "cuba"
 require "json"
+require 'sidekiq/web'
+
 require_relative "./services/product_service"
 
 # Enable compression
@@ -10,19 +12,20 @@ Cuba.define do
     on "products" do
       products = ProductService.list_products
 
-      res.headers["Content-Type"] = "application/json"
+      res.headers["content-type"] = "application/json"
       res.write products.map(&:as_json).to_json
     end
   end
 
   on post do
     on "products" do
-      on param("name") do |name|
-        ProductService.create_product_with_delay(name, 5)
+      body = JSON.parse(req.body.read)
+      name = body["name"]
 
-        res.headers["Content-Type"] = "application/json"
-        res.write({message: "Product will be created asynchronously."}.to_json)
-      end
+      ProductService.create_product_with_delay(name, 5)
+
+      res.headers["content-type"] = "application/json"
+      res.write({message: "Product will be created asynchronously."}.to_json)
     end
   end
 end
