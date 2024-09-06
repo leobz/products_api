@@ -1,0 +1,23 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.25.1)
+    nio4r (2.7.3)
+    puma (6.4.2)
+      nio4r (~> 2.0)
+    rack (3.1.7)
+    rackup (2.1.0)
+      rack (>= 3)
+      webrick (~> 1.8)
+    webrick (1.8.1)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  minitest
+  puma
+  rackup
+
+BUNDLED WITH
+   2.5.16
