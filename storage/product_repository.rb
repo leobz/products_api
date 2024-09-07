@@ -1,18 +1,19 @@
+require_relative '../models/product.rb'
+
 class ProductRepository
   @@products = {}
 
-  def self.save(product)
-    # TODO: Implement Sequel
-    @@products[product.id] = product
+  def self.save(attrs)
+    dataset.insert(name: attrs[:name])
   end
 
   def self.all()
-    # TODO: Implement Sequel
-    @@products.values
+    dataset.all
   end
 
-  def self.delete_all
-    # TODO: Implement Sequel
-    @@products = {}
+  private
+
+  def self.dataset
+    Product.dataset
   end
 end

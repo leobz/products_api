@@ -8,14 +8,44 @@ Install gems
 bundle install
 ```
 
-## Start app
+Set up the database
+
+```bash
+# Clean old containers
+make dc-down
+
+# Create the database, and run migrations
+make db-setup
+```
+
+## Run
+
+Execute the application in development mode with dockerized Redis and PostgreSQL databases
 
 ```bash
 make start
 ```
 
-## Run tests
+The application runs at `localhost:9292`
+
+## Run Tests
+
+Start PostgreSQL with the test database and execute automated tests
 
 ```bash
-rake test
+make test
+```
+
+## Other tasks and help
+
+Run the `make` command to see all the available tasks
+
+```
+db-console: Run db console with sequel
+db-migrate: Run db migrations
+db-setup:# Setup database for development mode
+dc-down: Stops containers and removes containers, networks, volumes, and images of this project
+help: Show help for each of the Makefile recipes.
+start: Run app local and databases in docker
+test: Run test db and run tests
 ```

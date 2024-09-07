@@ -1,5 +1,4 @@
 require "cuba"
-require "json"
 require 'sidekiq/web'
 
 require_relative "./services/product_service"
@@ -13,7 +12,7 @@ Cuba.define do
       products = ProductService.list_products
 
       res.headers["content-type"] = "application/json"
-      res.write products.map(&:as_json).to_json
+      res.write products.to_json
     end
   end
 

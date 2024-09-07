@@ -1,12 +1,6 @@
-class Product
-  attr_accessor :id, :name
+require 'sequel'
 
-  def initialize(name)
-    @id = SecureRandom.uuid
-    @name = name
-  end
-
-  def as_json
-    { id: @id, name: @name }
-  end
+DB = Sequel.connect(ENV['DATABASE_URL'])
+class Product < Sequel::Model
+  plugin :json_serializer
 end

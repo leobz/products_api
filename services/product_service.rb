@@ -12,7 +12,7 @@ class ProductService
   end
 
   def self.create_product(name)
-    product = Product.new(name)
-    ProductRepository.save(product)
+    attrs = { name: name }
+    ProductRepository.save(attrs)
   end
 end
