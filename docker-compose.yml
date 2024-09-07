@@ -1,4 +1,4 @@
-version: "3.0"
+version: "3.7"
 
 services:
   redis:
@@ -6,3 +6,13 @@ services:
     restart: always
     ports:
       - '6379:6379'
+
+  db:
+    image:  postgres:16
+    restart: always
+    environment:
+      - POSTGRES_DB=dev_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '15432:5432'

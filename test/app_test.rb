@@ -5,12 +5,6 @@ require_relative '../services/product_service.rb'
 require_relative '../storage/product_repository.rb'
 
 describe 'App' do
-
-  before do
-    # Replace with sequel helpers / DB cleaner
-    ProductRepository.delete_all
-  end
-
   describe 'Compress response' do
     it 'only if required' do
       response = get '/products', {}, { 'HTTP_ACCEPT_ENCODING' => 'gzip' }
