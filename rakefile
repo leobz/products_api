@@ -4,7 +4,7 @@ require "minitest/test_task"
 Minitest::TestTask.create
 task :default => :test
 
-# DB migration task
+# DB tasks
 namespace :db do
   desc "Run migrations"
   task :migrate, [:version] do |t, args|
@@ -14,5 +14,12 @@ namespace :db do
     Sequel.connect(ENV.fetch("DATABASE_URL")) do |db|
       Sequel::Migrator.run(db, "db/migrations", target: version)
     end
+    puts "OK: Migrations executed"
+  end
+
+  desc "Seed the database"
+  task :seed do
+    load File.expand_path('db/seeds.rb')
+    puts "OK: Seeds loaded"
   end
 end
