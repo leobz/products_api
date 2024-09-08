@@ -1,6 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    base64 (0.2.0)
+    bcrypt (3.1.20)
     bigdecimal (3.1.8)
     coderay (1.1.3)
     concurrent-ruby (1.3.4)
@@ -12,6 +14,8 @@ GEM
     database_cleaner-sequel (2.0.2)
       database_cleaner-core (~> 2.0.0)
       sequel
+    jwt (2.8.2)
+      base64
     logger (1.6.1)
     method_source (1.1.0)
     minitest (5.25.1)
@@ -47,8 +51,10 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  bcrypt
   cuba
   database_cleaner-sequel
+  jwt
   minitest
   minitest-around
   pg

@@ -1,8 +1,6 @@
 require_relative '../models/product.rb'
 
 class ProductRepository
-  @@products = {}
-
   def self.save(attrs)
     dataset.insert(name: attrs[:name])
   end

@@ -18,6 +18,13 @@ make dc-down
 make db-setup
 ```
 
+Set up JWT variables creating a `.env` file with the following content
+
+```
+JWT_ISSUER=<some_secretkey>
+JWT_SECRET=<some_issuer>
+```
+
 ## Run
 
 Execute the application in development mode with dockerized Redis and PostgreSQL databases
@@ -27,6 +34,8 @@ make start
 ```
 
 The application runs at `localhost:9292`
+
+Default user credentials are `username: "admin", "password": "adminpass"`
 
 ## Run Tests
 
