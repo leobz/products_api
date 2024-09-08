@@ -10,6 +10,7 @@ gem 'sequel'
 gem 'pg'
 gem 'jwt'
 gem 'bcrypt'
+gem 'rack-cache'
 
 group :test do
   gem 'database_cleaner-sequel'

@@ -1,0 +1,227 @@
+openapi: 3.0.3
+info:
+  title: Products API
+  version: 1.0.0
+  contact: {}
+servers:
+- url: localhost
+paths:
+  /products:
+    get:
+      summary: List Products
+      description: List Products
+      operationId: listProducts
+      responses:
+        '200':
+          description: Success
+          headers:
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+            cache-control:
+              schema:
+                type: string
+                example: private
+            content-encoding:
+              schema:
+                type: string
+                example: gzip
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    name:
+                      type: string
+                      example: body
+                example:
+                - id: 1
+                  name: body
+                - id: 2
+                  name: Product 2
+              examples:
+                Success:
+                  value:
+                  - id: 1
+                    name: body
+                  - id: 2
+                    name: Product 2
+    post:
+      summary: Create Product (With 5 seconds delay)
+      description: Create Product (With 5 seconds delay)
+      operationId: createProductWith5SecondsDelay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Product 2
+            examples:
+              Create Product (With 5 seconds delay):
+                value:
+                  name: Product 2
+      responses:
+        '200':
+          description: Success
+          headers:
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+            content-encoding:
+              schema:
+                type: string
+                example: gzip
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product will be created asynchronously.
+              examples:
+                Success:
+                  value:
+                    message: Product will be created asynchronously.
+  /AUTHORS:
+    get:
+      summary: AUTHORS File
+      description: AUTHORS File
+      operationId: authorsFile
+      responses:
+        '200':
+          description: AUTHORS File
+          headers:
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+            cache-control:
+              schema:
+                type: string
+                example: private
+            content-encoding:
+              schema:
+                type: string
+                example: gzip
+            date:
+              schema:
+                type: string
+                example: Sun, 08 Sep 2024 21:53:59 GMT
+            last-modified:
+              schema:
+                type: string
+                example: Sun, 08 Sep 2024 20:36:14 GMT
+            vary:
+              schema:
+                type: string
+                example: Accept-Encoding
+            x-rack-cache:
+              schema:
+                type: string
+                example: miss
+          content:
+            text/plain:
+              examples:
+                AUTHORS File:
+                  value: Leonel Bazan
+  /openapi.yml:
+    get:
+      summary: OpenAPI File
+      description: OpenAPI File
+      operationId: openapiFile
+      responses:
+        '200':
+          description: ''
+  /login:
+    post:
+      summary: Login
+      description: Login
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: adminpass
+                username:
+                  type: string
+                  example: admin
+            examples:
+              Login:
+                value:
+                  password: adminpass
+                  username: admin
+      responses:
+        '200':
+          description: Success
+          headers:
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+            content-encoding:
+              schema:
+                type: string
+                example: gzip
+            vary:
+              schema:
+                type: string
+                example: Accept-Encoding
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MjU4MzI3ODMsImlhdCI6MTcyNTgyOTE4MywiaXNzIjoiaXNzdWVyIiwic2NvcGVzIjpbInByb2R1Y3RzIl0sInVzZXIiOnsidXNlcm5hbWUiOiJhZG1pbiJ9fQ.N6bO6ehQX6M3IO8fOXkXRKtCERD7DTN8TH_Xvd3sIvA
+              examples:
+                Success:
+                  value:
+                    token: eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MjU4MzI3ODMsImlhdCI6MTcyNTgyOTE4MywiaXNzIjoiaXNzdWVyIiwic2NvcGVzIjpbInByb2R1Y3RzIl0sInVzZXIiOnsidXNlcm5hbWUiOiJhZG1pbiJ9fQ.N6bO6ehQX6M3IO8fOXkXRKtCERD7DTN8TH_Xvd3sIvA
+      security:
+      - {}
+  /sidekiq:
+    get:
+      summary: Jobs
+      description: Jobs
+      operationId: jobs
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: '13168'
+            cache-control:
+              schema:
+                type: string
+                example: private, no-store
+          content:
+            text/plain:
+              examples:
+                Success:
+                  value: "<!doctype html>"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+security:
+- bearerAuth: []
+tags: []
