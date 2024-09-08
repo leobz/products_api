@@ -1,4 +1,4 @@
-class Authentication
+class AuthenticationMiddleware
   def initialize(app)
     @app = app
   end

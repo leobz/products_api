@@ -1,18 +1,18 @@
 require 'sidekiq/testing'
 
 require_relative './test_helper.rb'
-require_relative '../services/product_service.rb'
-require_relative '../storage/product_repository.rb'
-require_relative '../storage/user_repository'
+require_relative '../app/services/product_service.rb'
+require_relative '../app/repositories/product_repository.rb'
+require_relative '../app/repositories/user_repository'
 
 describe 'App' do
   describe 'Compress response' do
     it 'only if required' do
       response = get '/products', {}, { 'HTTP_ACCEPT_ENCODING' => 'gzip' }
-      response.headers['Content-Encoding'].must_equal 'gzip'
+      _(response.headers['Content-Encoding']).must_equal 'gzip'
 
       response = get '/products'
-      response.headers['Content-Encoding'].must_equal nil
+      _(response.headers['Content-Encoding']).must_be_nil
     end
   end
 
@@ -21,7 +21,7 @@ describe 'App' do
       header 'Authorization', "Bearer INVALID"
       response = get '/products'
 
-      response.status.must_equal 401
+      _(response.status).must_equal 401
     end
 
     it 'returns a list of products' do
@@ -31,7 +31,7 @@ describe 'App' do
       auth_request
       response = get '/products'
 
-      response.status.must_equal 200
+      _(response.status).must_equal 200
 
       p1, p2 = JSON.parse(response.body)
       assert_equal 'Product 1', p1["name"]
@@ -44,7 +44,7 @@ describe 'App' do
       header 'Authorization', "Bearer INVALID"
       response = post '/products', {}
 
-      response.status.must_equal 401
+      _(response.status).must_equal 401
     end
 
     it 'creates a product asynchronously' do
@@ -52,7 +52,7 @@ describe 'App' do
       response = post '/products', { name: "Product 1" }.to_json, { "CONTENT_TYPE" => "application/json" }
 
       # Response
-      response.status.must_equal 200
+      _(response.status).must_equal 200
       assert_equal("Product will be created asynchronously.", JSON.parse(response.body)["message"])
 
       # Execute enqueue jobs
@@ -60,22 +60,22 @@ describe 'App' do
 
       # Storage
       products = ProductRepository.all
-      products.size.must_equal 1
-      products.first.name.must_equal 'Product 1'
+      _(products.size).must_equal 1
+      assert_equal 'Product 1', products.first.name
     end
   end
 
   describe 'POST /login' do
     it 'returns a token' do
-      user = User.create(username: "some_username", password: "some_password")
+      User.create(username: "some_username", password: "some_password")
 
       response = post '/login', { username: "some_username", password: "some_password" }.to_json, { "CONTENT_TYPE" => "application/json" }
 
-      response.status.must_equal 200
+      _(response.status).must_equal 200
       assert_equal "application/json", response.headers["Content-Type"]
 
       token = JSON.parse(response.body)["token"]
-      token.wont_be_nil
+      _(token).wont_be_nil
     end
   end
 end

@@ -2,9 +2,9 @@ require "cuba"
 require 'sidekiq/web'
 require 'rack/cache'
 
-require_relative "./services/product_service"
-require_relative "./services/authentication_service"
-require_relative "./middlewares/authentication"
+require_relative "./app/services/product_service"
+require_relative "./app/services/authentication_service"
+require_relative "./app/middlewares/authentication_middleware"
 require_relative "./app/routes/private_routes"
 require_relative "./app/routes/public_routes"
 
@@ -36,7 +36,7 @@ Cuba.define do
   on default do
     mount PublicRoutes
 
-    PrivateRoutes.use Authentication
+    PrivateRoutes.use AuthenticationMiddleware
     mount PrivateRoutes
   end
 end
