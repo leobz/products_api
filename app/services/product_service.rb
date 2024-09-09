@@ -1,5 +1,5 @@
 require_relative '../models/product'
-require_relative '../storage/product_repository'
+require_relative '../repositories/product_repository'
 require_relative '../workers/create_product_worker'
 
 class ProductService

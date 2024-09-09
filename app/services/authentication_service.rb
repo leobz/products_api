@@ -1,5 +1,11 @@
 require 'jwt'
 class AuthenticationService
+
+  def self.valid_user?(username, password)
+    user = UserRepository.find_by_username(username)
+    user && user.password == password
+  end
+
   def self.token(username)
     JWT.encode payload(username), ENV['JWT_SECRET'], 'HS256'
   end

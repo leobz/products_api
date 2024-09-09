@@ -1,5 +1,6 @@
-require 'bcrypt'
-require_relative '../../storage/user_repository'
+require_relative '../repositories/user_repository'
+require_relative "../services/authentication_service"
+
 class PublicRoutes < Cuba
   define do
     on post do
@@ -8,11 +9,9 @@ class PublicRoutes < Cuba
         username = body["username"]
         password = body["password"]
 
-        user = UserRepository.find_by_username(username)
-
         res.headers["content-type"] = "application/json"
 
-        if user && user.password == password
+        if AuthenticationService.valid_user?(username, password)
           token = AuthenticationService.token(username)
 
           res.write({token: token}.to_json)

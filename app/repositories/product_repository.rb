@@ -5,13 +5,17 @@ class ProductRepository
     dataset.insert(name: attrs[:name])
   end
 
-  def self.all()
-    dataset.all
+  def self.all
+    dataset.all.map { |attrs| parse(attrs) }
   end
 
   private
 
   def self.dataset
-    Product.dataset
+    DB[:products]
+  end
+
+  def self.parse(attrs)
+    Product.new(attrs)
   end
 end

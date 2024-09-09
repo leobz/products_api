@@ -11,6 +11,7 @@ gem 'pg'
 gem 'jwt'
 gem 'bcrypt'
 gem 'rack-cache'
+gem 'blueprinter'
 
 group :test do
   gem 'database_cleaner-sequel'

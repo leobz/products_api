@@ -1,4 +1,7 @@
-class Authentication
+require_relative "../helpers/web_helper"
+
+class AuthenticationMiddleware
+  include WebHelper
   def initialize(app)
     @app = app
   end
@@ -15,13 +18,13 @@ class Authentication
       @app.call(env)
 
     rescue JWT::DecodeError
-      [401, { 'content-type' => 'text/plain' }, ['A token must be passed.']]
+      json_error_response(401, 'A token must be passed.')
     rescue JWT::ExpiredSignature
-      [403, { 'content-type' => 'text/plain' }, ['The token has expired.']]
+      json_error_response(403, 'The token has expired.')
     rescue JWT::InvalidIssuerError
-      [403, { 'content-type' => 'text/plain' }, ['The token does not have a valid issuer.']]
+      json_error_response(403, 'The token does not have a valid issuer.')
     rescue JWT::InvalidIatError
-      [403, { 'content-type' => 'text/plain' }, ['The token does not have a valid "issued at" time.']]
+      json_error_response(403, 'The token does not have a valid "issued at" time.')
     end
   end
 end
