@@ -1,3 +1,5 @@
+require_relative "../helpers/web_helper"
+
 class AuthorizationMiddleware
   def initialize(app, scope)
     @app = app
@@ -8,7 +10,7 @@ class AuthorizationMiddleware
     if env[:scopes] && env[:scopes].include?(@scope)
       @app.call(env)
     else
-      [403, { 'content-type' => 'text/plain' }, ['Not Authorized.']]
+      json_error_response(403, 'Not Authorized.')
     end
   end
 end

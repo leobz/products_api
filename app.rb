@@ -1,4 +1,5 @@
 require "cuba"
+require "sequel"
 require 'sidekiq/web'
 require 'rack/cache'
 require_relative "./app/middlewares/authentication_middleware"
@@ -6,6 +7,9 @@ require_relative "./app/middlewares/authorization_middleware"
 
 require_relative "./app/routes/private_routes"
 require_relative "./app/routes/public_routes"
+
+# Connect to DB
+DB = Sequel.connect(ENV['DATABASE_URL'])
 
 # Enable mounting routes
 class Cuba
@@ -15,7 +19,7 @@ class Cuba
   end
 end
 
-# Enable CSRF protection
+# Enable CSRF protection with sessions
 Cuba.use Rack::Session::Cookie,
          secret: File.read(".session.key"),
          same_site: true,

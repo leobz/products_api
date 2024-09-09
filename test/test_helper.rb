@@ -17,8 +17,9 @@ class Minitest::Spec
 end
 
 # Setup database cleaner
+# TODO: Implement :transition strategy, which is faster
 DatabaseCleaner[:sequel].strategy = :truncation
-DatabaseCleaner[:sequel].db = DB
+DatabaseCleaner[:sequel].db = Sequel.connect(ENV['DATABASE_URL'])
 
 class Minitest::Spec
   before :each do

@@ -1,3 +1,6 @@
+require_relative '../services/product_service'
+require_relative '../blueprints/product_blueprint'
+
 class PrivateRoutes < Cuba
   define do
     on get do
@@ -5,7 +8,7 @@ class PrivateRoutes < Cuba
         products = ProductService.list_products
 
         res.headers["content-type"] = "application/json"
-        res.write products.to_json
+        res.write ProductBlueprint.render(products)
       end
     end
 

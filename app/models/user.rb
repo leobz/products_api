@@ -1,17 +1,16 @@
-require 'sequel'
 require 'bcrypt'
 
-DB = Sequel.connect(ENV['DATABASE_URL'])
-class User < Sequel::Model
+class User
   include BCrypt
-  plugin :json_serializer
+
+  attr_accessor :username, :password_hash
+
+  def initialize(attrs = {})
+    @username = attrs[:username]
+    @password_hash = attrs[:password_hash] || Password.create(attrs[:password])
+  end
 
   def password
     @password ||= Password.new(password_hash)
-  end
-
-  def password=(new_password)
-    @password = BCrypt::Password.create(new_password)
-    self.password_hash = @password
   end
 end

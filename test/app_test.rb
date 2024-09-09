@@ -99,7 +99,7 @@ describe 'App' do
 
   describe 'POST /login' do
     it 'returns a token' do
-      User.create(username: "some_username", password: "some_password")
+      UserRepository.save(username: "some_username", password: "some_password")
 
       response = post '/login', { username: "some_username", password: "some_password" }.to_json, { "CONTENT_TYPE" => "application/json" }
       _(response.status).must_equal 200

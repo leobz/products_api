@@ -1,6 +1,8 @@
-require 'sequel'
+class Product
+  attr_accessor :id, :name
 
-DB = Sequel.connect(ENV['DATABASE_URL'])
-class Product < Sequel::Model
-  plugin :json_serializer
+  def initialize(attrs)
+    @id = attrs[:id]
+    @name = attrs[:name]
+  end
 end
