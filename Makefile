@@ -5,14 +5,17 @@ define DOCKER_COMPOSE
 	else docker compose $1; fi;
 endef
 
+# Default variables
+DATABASE_URL = postgres://postgres:postgres@localhost:15432/dev_db
+TEST_DATABASE_URL = postgres://postgres:postgres@localhost:5432/test_db
+JWT_ISSUER = fudo
+JWT_SECRET = bG9uZyBzZWNyZXQgdXNlZCBmb3IgS29zdG8=
+
 # Load variables from .env file if exists
 ifneq (,$(wildcard ./.env))
     include .env
     export
 endif
-
-DATABASE_URL = postgres://postgres:postgres@localhost:15432/dev_db
-TEST_DATABASE_URL = postgres://postgres:postgres@localhost:5432/test_db
 
 # Makefile Commands
 default: help

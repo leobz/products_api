@@ -1,14 +1,29 @@
 # Products API
 
+## Documentation
+
+See the available endpoint using the [Swagger UI deployed in Github pages](https://leobz.github.io/products_api/doc/). You can run the examples by copying and executing the curl commands provided in it.
+
+## Issue Tracking
+
+For completed tasks, please refer to [this link](https://github.com/leobz/products_api/issues?q=is%3Aissue+is%3Aclosed).
+
+For pending tasks that are yet to be implemented, please visit the [open issues](https://github.com/leobz/products_api/issues?q=is%3Aopen+is%3Aissue).
+
 ## Setup
 
-Install gems
+1. Install requirements:
+
+- Ruby Version: 3.3.4
+- Docker Compose
+
+2. Install dependencies
 
 ```bash
 bundle install
 ```
 
-Set up the database
+3. Set up the database
 
 ```bash
 # Clean old containers
@@ -18,11 +33,13 @@ make dc-down
 make db-setup
 ```
 
-Set up JWT variables creating a `.env` file with the following content
+4. Optional: Set up your custom variables creating the `.env` file
 
 ```
-JWT_ISSUER=<some_secretkey>
-JWT_SECRET=<some_issuer>
+DATABASE_URL=<your_custom_dev_db_url>
+TEST_DATABASE_URL=<your_custom_test_db_url>
+JWT_ISSUER=<your_custom_issuer>
+JWT_SECRET=<your_custom_secret>
 ```
 
 ## Run
@@ -45,16 +62,6 @@ Start PostgreSQL with the test database and execute automated tests
 make test
 ```
 
-## Other tasks and help
+## Runt other tasks
 
 Run the `make` command to see all the available tasks
-
-```
-db-console: Run db console with sequel
-db-migrate: Run db migrations
-db-setup:# Setup database for development mode
-dc-down: Stops containers and removes containers, networks, volumes, and images of this project
-help: Show help for each of the Makefile recipes.
-start: Run app local and databases in docker
-test: Run test db and run tests
-```
