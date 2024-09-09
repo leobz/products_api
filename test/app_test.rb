@@ -12,13 +12,18 @@ describe 'App' do
       _(response.body).must_include "Leonel Bazan"
     end
 
+    it 'sets cache-control no-store for AUTHORS' do
+      response = get '/AUTHORS'
+      _(response.headers['Cache-Control']).must_equal 'no-store, private'
+    end
+
     it 'serves the openapi.yml file' do
       response = get '/openapi.yml'
       _(response.status).must_equal 200
       _(response.body).must_include "openapi"
     end
 
-    it 'sets cache-control headers for /openapi.yml' do
+    it 'sets cache-control during 24 hours for /openapi.yml' do
       response = get '/openapi.yml'
       _(response.headers['Cache-Control']).must_equal 'public, max-age=86400'
     end

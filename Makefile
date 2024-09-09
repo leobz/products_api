@@ -51,7 +51,7 @@ db-console: # Run db console with sequel
 .PHONY: db-setup
 db-setup: ## Setup database for development mode
 	$(call DOCKER_COMPOSE, -f docker-compose.yml up -d)
-	$(call DOCKER_COMPOSE, -f docker-compose-test.yml exec db bash -c "until pg_isready -U postgres; do echo 'Waiting for PostgreSQL to be ready...'; sleep 3; done")
+	$(call DOCKER_COMPOSE, -f docker-compose.yml exec db bash -c "until pg_isready -U postgres; do echo 'Waiting for PostgreSQL to be ready...'; sleep 3; done")
 	DATABASE_URL=$(DATABASE_URL) rake db:migrate
 	DATABASE_URL=$(DATABASE_URL) rake db:seed
 
