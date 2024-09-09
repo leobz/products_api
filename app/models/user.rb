@@ -1,4 +1,5 @@
 require 'sequel'
+require 'bcrypt'
 
 DB = Sequel.connect(ENV['DATABASE_URL'])
 class User < Sequel::Model

@@ -1,5 +1,6 @@
-require 'bcrypt'
 require_relative '../repositories/user_repository'
+require_relative "../services/authentication_service"
+
 class PublicRoutes < Cuba
   define do
     on post do
