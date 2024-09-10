@@ -2,7 +2,7 @@
 
 ## Documentation
 
-See the available endpoint using the [Swagger UI deployed in Github pages](https://leobz.github.io/products_api/doc/). You can run the examples by copying and executing the curl commands provided in it.
+See the available endpoints using the [Swagger UI deployed in Github pages](https://leobz.github.io/products_api). You can run the examples by copying and executing the curl commands provided in it.
 
 ## Issue Tracking
 
