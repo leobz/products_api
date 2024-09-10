@@ -1,6 +1,8 @@
 require_relative "../helpers/web_helper"
 
 class AuthorizationMiddleware
+  include WebHelper
+
   def initialize(app, scope)
     @app = app
     @scope = scope

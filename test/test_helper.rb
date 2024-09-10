@@ -31,6 +31,9 @@ class Minitest::Spec
   end
 end
 
+ENV['JWT_ISSUER'] = "fudo"
+ENV['JWT_SECRET'] = "bG9uZyBzZWNyZXQgdXNlZCBmb3IgS29zdG8"
+
 #***************************************** Helper Methods ********************************
 def create_rand_user_and_token()
   user_attrs = { username: "user_#{rand(1000)}", password: "password" }

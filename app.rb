@@ -19,7 +19,7 @@ class Cuba
   end
 end
 
-# Enable CSRF protection with sessions
+# Enable session management for CSRF protection in Sidekiq Web
 Cuba.use Rack::Session::Cookie,
          secret: File.read(".session.key"),
          same_site: true,
@@ -37,16 +37,13 @@ Cuba.use Rack::Cache,
 
 # Serve static files
 Cuba.use Rack::Static,
-         urls: ["/AUTHORS"],
-         root: "public",
-         cascade: true
-
-Cuba.use Rack::Static,
-         urls: ["/openapi.yml"],
-         root: "public",
-         cascade: true,
-         # Cache file in public caches (e.g. Rack::Cache) as well as in the browser
-         header_rules: [["/openapi.yml", {'cache-control' => 'public, max-age=86400'}]]
+        root: "public",
+        urls: ["/AUTHORS", "/openapi.yml"],
+        cascade: true,
+        header_rules: [
+          ["/AUTHORS", {'cache-control' => 'no-store'}],
+          ["/openapi.yml", {'cache-control' => 'public, max-age=86400'}]
+        ]
 
 Cuba.define do
   on default do

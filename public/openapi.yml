@@ -197,8 +197,8 @@ paths:
       - {}
   /sidekiq:
     get:
-      summary: Jobs
-      description: Jobs
+      summary: Sidekiq Jobs
+      description: Sidekiq Web monitor
       operationId: jobs
       responses:
         '200':
