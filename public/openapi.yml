@@ -3,151 +3,28 @@ info:
   title: Products API
   version: 1.0.0
   contact: {}
+  description: |-
+    The Products API provides endpoints for user authentication, product management, 
+    and system monitoring. It also serves static files like the OpenAPI specification 
+    and an AUTHORS file.
+
+    All requests accept the 'Accept-Encoding' header, allowing compressed responses (e.g., gzip) for improved performance.
+
+    Some endpoints include headers related to cache management, which are specified 
+    in their respective response documentation. This helps to control the caching 
+    behavior of these resources.
+
 servers:
-- url: localhost
+- url: 'http://localhost:9292'
 paths:
-  /products:
-    get:
-      summary: List Products
-      description: List Products
-      operationId: listProducts
-      responses:
-        '200':
-          description: Success
-          headers:
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
-            cache-control:
-              schema:
-                type: string
-                example: private
-            content-encoding:
-              schema:
-                type: string
-                example: gzip
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: number
-                      example: 1
-                    name:
-                      type: string
-                      example: body
-                example:
-                - id: 1
-                  name: body
-                - id: 2
-                  name: Product 2
-              examples:
-                Success:
-                  value:
-                  - id: 1
-                    name: body
-                  - id: 2
-                    name: Product 2
-    post:
-      summary: Create Product (With 5 seconds delay)
-      description: Create Product (With 5 seconds delay)
-      operationId: createProductWith5SecondsDelay
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: Product 2
-            examples:
-              Create Product (With 5 seconds delay):
-                value:
-                  name: Product 2
-      responses:
-        '200':
-          description: Success
-          headers:
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
-            content-encoding:
-              schema:
-                type: string
-                example: gzip
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Product will be created asynchronously.
-              examples:
-                Success:
-                  value:
-                    message: Product will be created asynchronously.
-  /AUTHORS:
-    get:
-      summary: AUTHORS File
-      description: AUTHORS File
-      operationId: authorsFile
-      responses:
-        '200':
-          description: AUTHORS File
-          headers:
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
-            cache-control:
-              schema:
-                type: string
-                example: private
-            content-encoding:
-              schema:
-                type: string
-                example: gzip
-            date:
-              schema:
-                type: string
-                example: Sun, 08 Sep 2024 21:53:59 GMT
-            last-modified:
-              schema:
-                type: string
-                example: Sun, 08 Sep 2024 20:36:14 GMT
-            vary:
-              schema:
-                type: string
-                example: Accept-Encoding
-            x-rack-cache:
-              schema:
-                type: string
-                example: miss
-          content:
-            text/plain:
-              examples:
-                AUTHORS File:
-                  value: Leonel Bazan
-  /openapi.yml:
-    get:
-      summary: OpenAPI File
-      description: OpenAPI File
-      operationId: openapiFile
-      responses:
-        '200':
-          description: ''
+  # Authentication
   /login:
     post:
-      summary: Login
-      description: Login
+      summary: Logs user into the system
+      description: Logs user into the system and retrieves an authentication token
       operationId: login
+      tags:
+        - Authentication
       requestBody:
         content:
           application/json:
@@ -168,6 +45,74 @@ paths:
       responses:
         '200':
           description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MjU4MzI3ODMsImlhdCI6MTcyNTgyOTE4MywiaXNzIjoiaXNzdWVyIiwic2NvcGVzIjpbInByb2R1Y3RzIl0sInVzZXIiOnsidXNlcm5hbWUiOiJhZG1pbiJ9fQ.N6bO6ehQX6M3IO8fOXkXRKtCERD7DTN8TH_Xvd3sIvA
+        '401':
+          description: Invalid username or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid username or password
+      security:
+      - {}
+
+  # Products
+  /products:
+    get:
+      summary: List Products
+      description: Retrieve the list of products
+      operationId: listProducts
+      tags:
+        - Products
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    name:
+                      type: string
+                      example: body
+                example:
+                - id: 1
+                  name: body
+                - id: 2
+                  name: Product 2
+    post:
+      summary: Create Product
+      description: Creates a product asynchronously (with 5 seconds delay)
+      operationId: createProductWith5SecondsDelay
+      tags:
+        - Products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Product 2
+      responses:
+        '200':
+          description: Success
           headers:
             Transfer-Encoding:
               schema:
@@ -177,46 +122,91 @@ paths:
               schema:
                 type: string
                 example: gzip
-            vary:
-              schema:
-                type: string
-                example: Accept-Encoding
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  token:
+                  message:
                     type: string
-                    example: eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MjU4MzI3ODMsImlhdCI6MTcyNTgyOTE4MywiaXNzIjoiaXNzdWVyIiwic2NvcGVzIjpbInByb2R1Y3RzIl0sInVzZXIiOnsidXNlcm5hbWUiOiJhZG1pbiJ9fQ.N6bO6ehQX6M3IO8fOXkXRKtCERD7DTN8TH_Xvd3sIvA
-              examples:
-                Success:
-                  value:
-                    token: eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MjU4MzI3ODMsImlhdCI6MTcyNTgyOTE4MywiaXNzIjoiaXNzdWVyIiwic2NvcGVzIjpbInByb2R1Y3RzIl0sInVzZXIiOnsidXNlcm5hbWUiOiJhZG1pbiJ9fQ.N6bO6ehQX6M3IO8fOXkXRKtCERD7DTN8TH_Xvd3sIvA
-      security:
-      - {}
-  /sidekiq:
+                    example: Product will be created asynchronously.
+
+  # Static Files
+  /AUTHORS:
     get:
-      summary: Sidekiq Jobs
-      description: Sidekiq Web monitor
-      operationId: jobs
+      summary: Static file
+      description: Static file which has the list of authors
+      operationId: authorsFile
+      tags:
+        - Static Files
       responses:
         '200':
-          description: Success
+          description: AUTHORS File
           headers:
-            Content-Length:
-              schema:
-                type: string
-                example: '13168'
             cache-control:
               schema:
                 type: string
                 example: private, no-store
+            last-modified:
+              schema:
+                type: string
+                example: Sun, 08 Sep 2024 20:36:14 GMT
           content:
             text/plain:
+              example: Tux The Penguin
+  /openapi.yml:
+    get:
+      summary: Static file
+      description: Static file with the OpenAPI specification of this API
+      operationId: openapiFile
+      tags:
+        - Static Files
+      responses:
+        '200':
+          description: ''
+          headers:
+            cache-control:
+              schema:
+                type: string
+                example: public, max-age=86400
+            age:
+              schema:
+                type: string
+                example: '0'
+            last-modified:
+              schema:
+                type: string
+                example: Sun, 08 Sep 2024 20:36:14 GMT
+          content:
+            text/yaml:
+              example: |
+                openapi: 3.0.3
+                info:
+                  title: Products API
+                  version: 1.0.0
+
+  # Monitoring
+  /sidekiq:
+    get:
+      summary: Jobs web monitor
+      description: Sidekiq web monitor to view the jobs of the system
+      operationId: jobs
+      tags:
+        - Monitoring
+      responses:
+        '200':
+          description: ''
+          content:
+            text/html:
               examples:
                 Success:
                   value: "<!doctype html>"
+          headers:
+            content-security-policy:
+              schema:
+                type: string
+                example: "https: http:; child-src 'self'; 'nonce-sFCOXNoaCALof0mA5h0vuQ=='"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -224,4 +214,12 @@ components:
       scheme: bearer
 security:
 - bearerAuth: []
-tags: []
+tags:
+  - name: Authentication
+    description: User authentication
+  - name: Products
+    description: Product management
+  - name: Static Files
+    description: Static files
+  - name: Monitoring
+    description: System monitoring
