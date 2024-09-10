@@ -62,6 +62,6 @@ Start PostgreSQL with the test database and execute automated tests
 make test
 ```
 
-## Runt other tasks
+## Run other tasks
 
 Run the `make` command to see all the available tasks

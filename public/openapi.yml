@@ -52,7 +52,7 @@ paths:
                 properties:
                   token:
                     type: string
-                    example: eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MjU4MzI3ODMsImlhdCI6MTcyNTgyOTE4MywiaXNzIjoiaXNzdWVyIiwic2NvcGVzIjpbInByb2R1Y3RzIl0sInVzZXIiOnsidXNlcm5hbWUiOiJhZG1pbiJ9fQ.N6bO6ehQX6M3IO8fOXkXRKtCERD7DTN8TH_Xvd3sIvA
+                    example: eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MjU4MzI3ODMsImlhdCI6MTcyNTgyOTE4MywiaXNzIjoiaXNzdWVyIiwyc2NvcGVzIjpbInByb2R1Y3RzIl0sInVzZXIiOnsidXNlcm5hbWUiOiJhZG1pbiJ9fQ.N6bO6ehQX6M3IO8fOXkXRKtCERD7DTN8TH_Xvd3sIvA
         '401':
           description: Invalid username or password
           content:
