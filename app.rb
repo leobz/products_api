@@ -5,7 +5,7 @@ require 'rack/cache'
 require_relative "./app/middlewares/authentication_middleware"
 require_relative "./app/middlewares/authorization_middleware"
 
-require_relative "./app/routes/private_routes"
+require_relative "./app/routes/products_routes"
 require_relative "./app/routes/public_routes"
 
 # Connect to DB
@@ -54,8 +54,8 @@ Cuba.define do
       run Sidekiq::Web
     end
 
-    PrivateRoutes.use AuthenticationMiddleware
-    PrivateRoutes.use AuthorizationMiddleware, "products"
-    mount PrivateRoutes
+    ProductsRoutes.use AuthenticationMiddleware
+    ProductsRoutes.use AuthorizationMiddleware, "products"
+    mount ProductsRoutes
   end
 end

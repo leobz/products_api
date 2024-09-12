@@ -23,3 +23,23 @@ namespace :db do
     puts "OK: Seeds loaded"
   end
 end
+
+# Sidekiq
+require 'sidekiq/api'
+
+namespace :sidekiq do
+  desc "Clear all Sidekiq queues, retries, dead jobs and reset stats"
+  task :clean do
+    puts "Clearing Sidekiq..."
+    puts "Clearing Queues, Retries, Scheduled and Dead job..."
+    Sidekiq::Queue.all.each(&:clear)
+    Sidekiq::RetrySet.new.clear
+    Sidekiq::ScheduledSet.new.clear
+    Sidekiq::DeadSet.new.clear
+
+    puts "Stats reset..."
+    Sidekiq::Stats.new.reset
+
+   puts "Sidekiq cleaned successfully."
+  end
+end
