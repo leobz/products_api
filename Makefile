@@ -8,8 +8,6 @@ endef
 # Default variables
 DATABASE_URL = postgres://postgres:postgres@localhost:15432/dev_db
 TEST_DATABASE_URL = postgres://postgres:postgres@localhost:5432/test_db
-JWT_ISSUER = fudo
-JWT_SECRET = bG9uZyBzZWNyZXQgdXNlZCBmb3IgS29zdG8=
 
 # Load variables from .env file if exists
 ifneq (,$(wildcard ./.env))
@@ -24,12 +22,13 @@ default: help
 help: # Show help for each of the Makefile recipes.
 	@grep -E '^[a-zA-Z0-9 -]+:.*#'  Makefile | sort | while read -r l; do printf "\033[1;32m$$(echo $$l | cut -f 1 -d':')\033[00m:$$(echo $$l | cut -f 2- -d'#')\n"; done
 
+.PHONY: build
+build: # Build ruby app image
+	docker build .
+
 .PHONY: start
 start: # Run app local and databases in docker
-	$(call DOCKER_COMPOSE, up -d)
-	JWT_ISSUER=$(JWT_ISSUER) \
-	JWT_SECRET=$(JWT_SECRET) \
-	DATABASE_URL=$(DATABASE_URL) sh start_app.sh
+	$(call DOCKER_COMPOSE, up)
 
 .PHONY: dc-down
 dc-down: # Stops containers and removes containers, networks, volumes, and images of this project
