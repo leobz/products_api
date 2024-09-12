@@ -12,6 +12,7 @@ gem 'jwt'
 gem 'bcrypt'
 gem 'rack-cache'
 gem 'blueprinter'
+gem 'redis-rack-cache'
 
 group :test do
   gem 'database_cleaner-sequel'

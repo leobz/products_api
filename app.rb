@@ -2,6 +2,8 @@ require "cuba"
 require "sequel"
 require 'sidekiq/web'
 require 'rack/cache'
+require 'redis-rack-cache'
+
 require_relative "./app/middlewares/authentication_middleware"
 require_relative "./app/middlewares/authorization_middleware"
 
@@ -28,12 +30,11 @@ Cuba.use Rack::Session::Cookie,
 # Enable gzip compression
 Cuba.use Rack::Deflater
 
-# In-memory cache for development, use memcached for production
 # Note: For more performance in static files, you can use Varnish or Nginx cache.
 Cuba.use Rack::Cache,
          verbose: true,
-         metastore: 'heap:/',
-         entitystore: 'heap:/'
+         metastore: "#{ENV['REDIS_URL']}/metastore",
+         entitystore: "#{ENV['REDIS_URL']}/entitystore"
 
 # Serve static files
 Cuba.use Rack::Static,
