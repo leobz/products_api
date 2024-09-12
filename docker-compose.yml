@@ -1,19 +1,4 @@
 services:
-  app:
-    build: ./
-    #restart: on-failure
-    environment:
-      - RAILS_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/dev_db
-      - REDIS_URL=redis://redis:6379/0
-      - JWT_SECRET=bG9uZyBzZWNyZXQgdXNlZCBmb3IgS29zdG8=
-      - JWT_ISSUER=fudo
-    depends_on:
-      - db
-      - redis
-    ports:
-      - "9292:9292"
-
   redis:
     image: redis:alpine3.18
     restart: always

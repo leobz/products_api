@@ -1,0 +1,76 @@
+services:
+  webserver:
+    image: nginx:latest
+    restart: always
+    depends_on:
+      - app1
+      - app2
+      - app3
+    ports:
+      - 9292:9292
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+
+  app1:
+    image: products_api-app:latest
+    environment:
+      - RAILS_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/prod_db
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET=bG9uZyBzZWNyZXQgdXNlZCBmb3IgS29zdG8=
+      - JWT_ISSUER=fudo
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "4001:9292"
+
+  app2:
+    image: products_api-app:latest
+    environment:
+      - RAILS_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/prod_db
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET=bG9uZyBzZWNyZXQgdXNlZCBmb3IgS29zdG8=
+      - JWT_ISSUER=fudo
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "4002:9292"
+
+  app3:
+    image: products_api-app:latest
+    environment:
+      - RAILS_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/prod_db
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET=bG9uZyBzZWNyZXQgdXNlZCBmb3IgS29zdG8=
+      - JWT_ISSUER=fudo
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "4003:9292"
+
+  redis:
+    image: redis:alpine3.18
+    restart: always
+    ports:
+      - "6379:6379"
+
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_DB=prod_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "15432:5432"
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G

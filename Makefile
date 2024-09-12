@@ -8,9 +8,14 @@ endef
 # Default variables
 DATABASE_URL = postgres://postgres:postgres@localhost:15432/dev_db
 TEST_DATABASE_URL = postgres://postgres:postgres@localhost:5432/test_db
+PROD_DATABASE_URL = postgres://postgres:postgres@localhost:15432/prod_db
+REDIS_URL=redis://localhost:6379/0
+JWT_ISSUER = fudo
+JWT_SECRET = bG9uZyBzZWNyZXQgdXNlZCBmb3IgS29zdG8=
 VEGETA_DURATION = 5s
 VEGETA_RATE = 0
 VEGETA_MAX_WORKERS = 1000
+
 # Load variables from .env file if exists
 ifneq (,$(wildcard ./.env))
     include .env
@@ -28,13 +33,37 @@ help: # Show help for each of the Makefile recipes.
 build: # Build ruby app image
 	docker build . -t products_api-app
 
-.PHONY: start
-start: # Run app local and databases in docker
-	$(call DOCKER_COMPOSE, up)
+.PHONY: dev
+dev: # Run app local and databases in docker
+	$(call DOCKER_COMPOSE, -f docker-compose.yml up -d db)
+	$(call DOCKER_COMPOSE, -f docker-compose.yml exec db bash -c "until pg_isready -U postgres; do echo 'Waiting for PostgreSQL to be ready...'; sleep 3; done")
+	DATABASE_URL=$(DATABASE_URL) rake db:migrate
+	DATABASE_URL=$(DATABASE_URL) rake db:seed
+	$(call DOCKER_COMPOSE, up -d)
+	JWT_ISSUER=$(JWT_ISSUER) \
+	JWT_SECRET=$(JWT_SECRET) \
+	REDIS_URL=$(REDIS_URL) \
+	DATABASE_URL=$(DATABASE_URL) sh start_app.sh
+
+.PHONY: prod
+prod: # Run Nginx, 3 app instances, postgresql and redis in docker
+	$(call DOCKER_COMPOSE, -f docker-compose-prod.yml up -d db)
+	$(call DOCKER_COMPOSE, -f docker-compose-prod.yml exec db bash -c "until pg_isready -U postgres; do echo 'Waiting for PostgreSQL to be ready...'; sleep 3; done")
+	DATABASE_URL=$(PROD_DATABASE_URL) rake db:migrate
+	DATABASE_URL=$(PROD_DATABASE_URL) rake db:seed
+	$(call DOCKER_COMPOSE, -f docker-compose-prod.yml up)
+
+.PHONY: test
+test: # Run test db and run tests
+	$(call DOCKER_COMPOSE, -f docker-compose-test.yml up -d)
+	$(call DOCKER_COMPOSE, -f docker-compose-test.yml exec test-db bash -c "until pg_isready -U postgres; do echo 'Waiting for PostgreSQL to be ready...'; sleep 3; done")
+	DATABASE_URL=$(TEST_DATABASE_URL) rake db:migrate
+	REDIS_URL=$(REDIS_URL) DATABASE_URL=$(TEST_DATABASE_URL) rake test
 
 .PHONY: dc-down
 dc-down: # Stops containers and removes containers, networks, volumes, and images of this project
 	$(call DOCKER_COMPOSE, -f docker-compose-test.yml down)
+	$(call DOCKER_COMPOSE, -f docker-compose-prod.yml down)
 	$(call DOCKER_COMPOSE, down)
 
 .PHONY: db-migrate
@@ -49,21 +78,6 @@ db-seed: # Run db seeds
 db-console: # Run db console with sequel
 	sequel $(DATABASE_URL)
 
-.PHONY: db-setup
-db-setup: # Setup database for development mode
-	$(call DOCKER_COMPOSE, -f docker-compose.yml up -d)
-	$(call DOCKER_COMPOSE, -f docker-compose.yml exec db bash -c "until pg_isready -U postgres; do echo 'Waiting for PostgreSQL to be ready...'; sleep 3; done")
-	DATABASE_URL=$(DATABASE_URL) rake db:migrate
-	DATABASE_URL=$(DATABASE_URL) rake db:seed
-
-.PHONY: test
-test: # Run test db and run tests
-	$(call DOCKER_COMPOSE, -f docker-compose-test.yml up -d)
-	$(call DOCKER_COMPOSE, -f docker-compose-test.yml exec test-db bash -c "until pg_isready -U postgres; do echo 'Waiting for PostgreSQL to be ready...'; sleep 3; done")
-	DATABASE_URL=$(TEST_DATABASE_URL) rake db:migrate
-	DATABASE_URL=$(TEST_DATABASE_URL) rake test
-
-
 .PHONY: lt-products-list
 lt-products-list: # lt-products-list token=<jwt-token>. HTTP load test of GET '/products' endpoint
 	@if [ -z $(token) ];\
@@ -73,7 +87,6 @@ lt-products-list: # lt-products-list token=<jwt-token>. HTTP load test of GET '/
 		docker run --network=host --rm -i peterevans/vegeta sh -c \
 		"echo 'GET http://localhost:9292/products' | vegeta attack -header 'Authorization: Bearer $(token)' -duration=$(VEGETA_DURATION) -rate=$(VEGETA_RATE) -max-workers=$(VEGETA_MAX_WORKERS) | tee results.bin | vegeta report" ; \
 	fi
-
 
 .PHONY: lt-products-create
 lt-products-create: # lt-products-create token=<jwt-token>. HTTP load test of POST '/products' endpoint
