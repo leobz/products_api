@@ -107,11 +107,14 @@ lt-products-create: # lt-products-create token=<jwt-token>. HTTP load test of PO
 	fi
 
 .PHONY: lt-openapi-cache
-lt-openapi-cache: # lt-openapi-cache token=<jwt-token>. HTTP load test of GET '/openapi.yml' endpoint
-	@if [ -z $(token) ];\
-	then \
-		echo "Token not provided!\n   Usage: make lt-openapi-cache token=<jwt-token>" ;\
-	else \
-		docker run --network=host --rm -i peterevans/vegeta sh -c \
-		"echo 'GET http://localhost:9292/openapi.yml' | vegeta attack -header 'Authorization: Bearer $(token)' -duration=$(VEGETA_DURATION) -rate=$(VEGETA_RATE) -max-workers=$(VEGETA_MAX_WORKERS) | tee results.bin | vegeta report" ; \
-	fi
+lt-openapi-cache: # HTTP load test of GET '/openapi.yml'
+	docker run --network=host --rm -i peterevans/vegeta sh -c \
+	"echo 'GET http://localhost:9292/openapi.yml' | vegeta attack \
+	-duration=$(VEGETA_DURATION) -rate=$(VEGETA_RATE) -max-workers=$(VEGETA_MAX_WORKERS) | tee results.bin | vegeta report" ; \
+
+.PHONY: lt-openapi-not-cache
+lt-openapi-not-cache: # HTTP load test of GET '/openapi.yml' endpoint with past If-Modified-Since
+	docker run --network=host --rm -i peterevans/vegeta sh -c \
+	"echo 'GET http://localhost:9292/openapi.yml' | vegeta attack \
+	-header 'If-Modified-Since: Thu, 01 Jan 1970 00:00:00 GMT' \
+	-duration=$(VEGETA_DURATION) -rate=$(VEGETA_RATE) -max-workers=$(VEGETA_MAX_WORKERS) | tee results.bin | vegeta report" ; \

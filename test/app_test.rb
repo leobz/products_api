@@ -27,6 +27,26 @@ describe 'App' do
       response = get '/openapi.yml'
       _(response.headers['Cache-Control']).must_equal 'public, max-age=86400'
     end
+
+    it 'returns 304 Not Modified when If-Modified-Since header is set and file has not changed' do
+      response = get '/openapi.yml'
+      _(response.status).must_equal 200
+
+      last_modified = response.headers['Last-Modified']
+
+      response = get '/openapi.yml', {}, { 'HTTP_IF_MODIFIED_SINCE' => last_modified }
+      _(response.status).must_equal 304
+      _(response.body).must_be_empty
+    end
+
+    it 'returns 200 OK when If-Modified-Since header is set and file has changed' do
+      response = get '/openapi.yml'
+      _(response.status).must_equal 200
+
+      response = get '/openapi.yml', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Thu, 01 Jan 1970 00:00:00 GMT' }
+      _(response.status).must_equal 200
+       _(response.body).must_include "openapi"
+    end
   end
 
   describe 'Sidekiq Web' do
