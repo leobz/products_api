@@ -33,15 +33,6 @@ make dc-down
 make db-setup
 ```
 
-4. Optional: Set up your custom variables creating the `.env` file
-
-```
-DATABASE_URL=<your_custom_dev_db_url>
-TEST_DATABASE_URL=<your_custom_test_db_url>
-JWT_ISSUER=<your_custom_issuer>
-JWT_SECRET=<your_custom_secret>
-```
-
 ## Run
 
 Execute the application in development mode with dockerized Redis and PostgreSQL databases

@@ -1,7 +1,7 @@
 require_relative '../services/product_service'
 require_relative '../blueprints/product_blueprint'
 
-class PrivateRoutes < Cuba
+class ProductsRoutes < Cuba
   define do
     on get do
       on "products" do
